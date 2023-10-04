@@ -1,12 +1,26 @@
 import { Link, NavLink } from "react-router-dom";
-import userDefaultPic from "../../assets/user.png"
+import userDefaultPic from "../../assets/user.png";
+import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const Navbar = () => {
-    const navItems = <>
-    <NavLink to={'/'}>Home</NavLink>
-    <NavLink to={'/about'}>About</NavLink>
-    <NavLink to={'/career'}>Career</NavLink>
+  const { user,signOutUser } = useContext(AuthContext);
+  const navItems = (
+    <>
+      <NavLink to={"/"}>Home</NavLink>
+      <NavLink to={"/about"}>About</NavLink>
+      <NavLink to={"/career"}>Career</NavLink>
     </>
+  );
+  const handleSignOut = () => {
+    signOutUser()
+      .then(() => {
+        console.log('sign out successfully');
+      })
+      .catch(error => {
+        console.error(error);
+    })
+  }
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -31,7 +45,7 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-28 space-y-1 font-semibold"
           >
-           {navItems}
+            {navItems}
           </ul>
         </div>
       </div>
@@ -40,11 +54,19 @@ const Navbar = () => {
           {navItems}
         </ul>
       </div>
-          <div className="navbar-end">
-              <img src={userDefaultPic} alt="User Pic" className="w-9 rounded-full mr-4"/>
-              <Link to={'/login'}>
-                  <button className="btn">Login</button>
-              </Link>
+      <div className="navbar-end">
+        <img
+          src={userDefaultPic}
+          alt="User Pic"
+          className="w-9 rounded-full mr-4"
+        />
+        {user ? (
+            <button onClick={handleSignOut} className="btn">Sign Out</button>
+        ) : (
+          <Link to={"/login"}>
+            <button className="btn">Login</button>
+          </Link>
+        )}
       </div>
     </div>
   );
